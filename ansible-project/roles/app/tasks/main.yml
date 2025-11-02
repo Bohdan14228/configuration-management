@@ -1,0 +1,41 @@
+---
+- name: Remove existing site.zip if present
+  ansible.builtin.file:
+    path: "files/site.zip"
+    state: absent
+  delegate_to: localhost
+  become: false
+
+- name: Create real ZIP archive from index.html
+  ansible.builtin.command:
+    cmd: zip -j files/site.zip files/index.html
+  delegate_to: localhost
+  become: false
+
+- name: Ensure web root exists
+  file:
+    path: /var/www/html
+    state: directory
+
+- name: Copy zip archive to server
+  ansible.builtin.copy:
+    src: files/site.zip
+    dest: /tmp/site.zip
+
+- name: Ensure unzip is installed
+  ansible.builtin.apt:
+    name: unzip
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Extract website
+  ansible.builtin.unarchive:
+    src: /tmp/site.zip
+    dest: /var/www/html
+    remote_src: yes # говорит ансиблу что src на удаленной машине
+
+- name: Remove tarball after extraction
+  ansible.builtin.file:
+    path: /tmp/site.zip
+    state: absent

@@ -1,0 +1,22 @@
+---
+- name: Update system packages
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Install basic utilities
+  apt:
+    name:
+      - curl
+      - vim
+      - git
+      - ufw
+      - fail2ban
+      - zip
+    state: present
+
+- name: Enable fail2ban
+  systemd:
+    name: fail2ban
+    enabled: yes
+    state: started
