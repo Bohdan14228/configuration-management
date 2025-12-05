@@ -17,10 +17,10 @@
   notify:
     - Restart Nginx
 
-#- name: Copy index.html
-#  template:
-#    src: index.html
-#    dest: /var/www/html/index.html
-# notify:
-#    - Restart Nginx
+- name: Copy index.html
+  ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/html/index.html
+  notify:
+    - Restart Nginx
 
